@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CatalogService.Infrastructure.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250417073316_Initial")]
+    [DbContext(typeof(ProductContext))]
+    [Migration("20250417150650_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
