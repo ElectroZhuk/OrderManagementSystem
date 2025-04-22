@@ -1,6 +1,7 @@
 using CatalogService.Api.Dtos;
 using CatalogService.Application.Dtos;
-using CatalogService.Application.Services;
+using CatalogService.Application.Services.Interfaces;
+using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
 namespace CatalogService.Api;
 
@@ -9,7 +10,8 @@ public static class ProductEndpoints
     public static void MapProductEndpoints(this IEndpointRouteBuilder routeBuilder)
     {
         var group = routeBuilder.MapGroup("/api/products")
-            .WithOpenApi();
+            .WithOpenApi()
+            .AddFluentValidationAutoValidation();
 
         group.MapPost("", CreateAsync);
     }

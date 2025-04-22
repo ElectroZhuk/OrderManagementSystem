@@ -1,4 +1,5 @@
 using CatalogService.Application.Services;
+using CatalogService.Application.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CatalogService.Application;

@@ -19,5 +19,6 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
     public void Configure(EntityTypeBuilder<Product> builder)
     {
         builder.HasKey(p => p.Id);
+        builder.HasIndex(p => p.Name).IsUnique();
     }
 }

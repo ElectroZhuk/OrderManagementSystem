@@ -1,7 +1,7 @@
 using CatalogService.Domain.Repositories;
 using FluentValidation;
 
-namespace CatalogService.Api.Dtos;
+namespace CatalogService.Api.Dtos.Validators;
 
 public class CreateProductRequestValidator : AbstractValidator<CreateProductRequest>
 {
