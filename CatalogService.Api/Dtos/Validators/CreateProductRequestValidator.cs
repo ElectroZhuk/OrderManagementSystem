@@ -12,6 +12,6 @@ public class CreateProductRequestValidator : AbstractValidator<CreateProductRequ
         RuleFor(p => p.Description).NotEmpty();
         RuleFor(p => p.Category).NotEmpty();
         RuleFor(p => p.Price).GreaterThan(0);
-        RuleFor(p => p.Quantity).GreaterThan(0);
+        RuleFor(p => p.Quantity).GreaterThan(-1);
     }
 }

@@ -16,8 +16,7 @@ internal class ProductService(IProductRepository productRepository, IAppLogger l
             Description = product.Description,
             Category = product.Category,
             Price = product.Price,
-            Quantity = product.Quantity,
-            CreatedDateUtc = DateTime.UtcNow
+            Quantity = product.Quantity
         };
 
         if (await productRepository.HasItemWithName(newProduct.Name))
@@ -31,6 +30,38 @@ internal class ProductService(IProductRepository productRepository, IAppLogger l
         await productRepository.CreateAsync(newProduct);
         
         logger.Information("Создан продукт {@Product}.", newProduct);
+    }
+
+    public async Task UpdateAsync(Guid id, UpdateProductDto product)
+    {
+        var foundProduct = await GetByIdAsync(id);
+
+        if (foundProduct is null)
+        {
+            var exception = new ArgumentException();
+            logger.Error(exception, "Product с ID=\"{Id}\" не существует.", id);
+
+            throw exception;
+        }
+
+        if (product.Name is not null)
+            foundProduct.Name = product.Name;
+        
+        if (product.Description is not null)
+            foundProduct.Description = product.Description;
+        
+        if (product.Category is not null)
+            foundProduct.Category = product.Category;
+        
+        if (product.Price is not null)
+            foundProduct.Price = product.Price.Value;
+        
+        if (product.Quantity is not null)
+            foundProduct.Quantity = product.Quantity.Value;
+
+        await productRepository.UpdateAsync(foundProduct);
+        
+        logger.Information("Обновлен продукт {@Product}.", foundProduct);
     }
 
     public async Task<Product?> GetByIdAsync(Guid id)
