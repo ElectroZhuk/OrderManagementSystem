@@ -34,7 +34,17 @@ internal class ProductService(IProductRepository productRepository, IAppLogger l
 
     public async Task UpdateAsync(Guid id, UpdateProductDto product)
     {
-        var foundProduct = await GetByIdAsync(id);
+        Product? foundProduct;
+
+        try
+        {
+            foundProduct = await GetByIdAsync(id);
+        }
+        catch (Exception e)
+        {
+            logger.Error(e, "Ошибка при получении обновляемого продукта с ID=\"{Id}\".", id);
+            throw;
+        }
 
         if (foundProduct is null)
         {
@@ -59,8 +69,16 @@ internal class ProductService(IProductRepository productRepository, IAppLogger l
         if (product.Quantity is not null)
             foundProduct.Quantity = product.Quantity.Value;
 
-        await productRepository.UpdateAsync(foundProduct);
-        
+        try
+        {
+            await productRepository.UpdateAsync(foundProduct);
+        }
+        catch (Exception e)
+        {
+            logger.Error(e, "Ошибка при обновлении продукта {@Product}.", foundProduct);
+            throw;
+        }
+
         logger.Information("Обновлен продукт {@Product}.", foundProduct);
     }
 
