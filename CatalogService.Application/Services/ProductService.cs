@@ -1,5 +1,6 @@
 using CatalogService.Application.Common.Logging;
 using CatalogService.Application.Dtos;
+using CatalogService.Application.Exceptions;
 using CatalogService.Application.Services.Interfaces;
 using CatalogService.Domain.Entities;
 using CatalogService.Domain.Repositories;
@@ -21,10 +22,7 @@ internal class ProductService(IProductRepository productRepository, IAppLogger l
 
         if (await productRepository.HasItemWithName(newProduct.Name))
         {
-            var exception = new ArgumentException();
-            logger.Error(exception, "Product с именем {Name} уже существует.", newProduct.Name);
-            
-            throw exception;
+            throw new ProductWithNameAlreadyExistException(newProduct.Name);
         }
 
         await productRepository.CreateAsync(newProduct);
@@ -34,25 +32,13 @@ internal class ProductService(IProductRepository productRepository, IAppLogger l
 
     public async Task UpdateAsync(Guid id, UpdateProductDto product)
     {
-        Product? foundProduct;
-
-        try
-        {
-            foundProduct = await GetByIdAsync(id);
-        }
-        catch (Exception e)
-        {
-            logger.Error(e, "Ошибка при получении обновляемого продукта с ID=\"{Id}\".", id);
-            throw;
-        }
+        if (product.Name is not null && await productRepository.HasItemWithName(product.Name))
+            throw new ProductWithNameAlreadyExistException(product.Name);
+        
+        var foundProduct = await GetByIdAsync(id);
 
         if (foundProduct is null)
-        {
-            var exception = new ArgumentException();
-            logger.Error(exception, "Product с ID=\"{Id}\" не существует.", id);
-
-            throw exception;
-        }
+            throw new ProductNotFoundByIdException(id);
 
         if (product.Name is not null)
             foundProduct.Name = product.Name;
@@ -69,15 +55,7 @@ internal class ProductService(IProductRepository productRepository, IAppLogger l
         if (product.Quantity is not null)
             foundProduct.Quantity = product.Quantity.Value;
 
-        try
-        {
-            await productRepository.UpdateAsync(foundProduct);
-        }
-        catch (Exception e)
-        {
-            logger.Error(e, "Ошибка при обновлении продукта {@Product}.", foundProduct);
-            throw;
-        }
+        await productRepository.UpdateAsync(foundProduct);
 
         logger.Information("Обновлен продукт {@Product}.", foundProduct);
     }

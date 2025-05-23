@@ -52,18 +52,7 @@ public static class ProductEndpoints
         if (product.Quantity is not null)
             updatedProduct.Quantity = product.Quantity.Value;
 
-        try
-        {
-            await productService.UpdateAsync(id, updatedProduct);
-        }
-        catch (ArgumentException)
-        {
-            return Results.NotFound();
-        }
-        catch (Exception)
-        {
-            return Results.StatusCode(500);
-        }
+        await productService.UpdateAsync(id, updatedProduct);
 
         return Results.NoContent();
     }

@@ -9,7 +9,6 @@ public class UpdateProductRequestValidator : AbstractValidator<UpdateProductRequ
     public UpdateProductRequestValidator(IProductRepository productRepository)
     {
         RuleFor(p => p.Name).NotEmpty()
-            .Must(n => !productRepository.HasItemWithName(n!).Result)
             .When(p => p.Name is not null);
         RuleFor(p => p.Description).NotEmpty()
             .When(p => p.Description is not null);
