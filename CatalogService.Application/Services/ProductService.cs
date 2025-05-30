@@ -32,28 +32,22 @@ internal class ProductService(IProductRepository productRepository, IAppLogger l
 
     public async Task UpdateAsync(Guid id, UpdateProductDto product)
     {
-        if (product.Name is not null && await productRepository.HasItemWithName(product.Name))
-            throw new ProductWithNameAlreadyExistException(product.Name);
+        if (id != product.Id)
+            throw new UpdatedProductIdDoesNotMatchException(id, product.Id);
         
         var foundProduct = await GetByIdAsync(id);
-
+        
         if (foundProduct is null)
             throw new ProductNotFoundByIdException(id);
-
-        if (product.Name is not null)
-            foundProduct.Name = product.Name;
         
-        if (product.Description is not null)
-            foundProduct.Description = product.Description;
+        if (product.Name != foundProduct.Name && await productRepository.HasItemWithName(product.Name))
+            throw new ProductWithNameAlreadyExistException(product.Name);
         
-        if (product.Category is not null)
-            foundProduct.Category = product.Category;
-        
-        if (product.Price is not null)
-            foundProduct.Price = product.Price.Value;
-        
-        if (product.Quantity is not null)
-            foundProduct.Quantity = product.Quantity.Value;
+        foundProduct.Name = product.Name;
+        foundProduct.Description = product.Description;
+        foundProduct.Category = product.Category;
+        foundProduct.Price = product.Price;
+        foundProduct.Quantity = product.Quantity;
 
         await productRepository.UpdateAsync(foundProduct);
 
