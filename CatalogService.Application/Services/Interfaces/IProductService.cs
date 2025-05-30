@@ -7,9 +7,9 @@ public interface IProductService
 {
     Task CreateAsync(CreateProductDto product);
 
+    Task UpdateAsync(Guid id, UpdateProductDto product);
+
     Task<Product?> GetByIdAsync(Guid id);
 
     Task<Product?> GetByNameAsync(string name);
-    
-    
 }

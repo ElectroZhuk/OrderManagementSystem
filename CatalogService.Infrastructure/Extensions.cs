@@ -12,11 +12,11 @@ namespace CatalogService.Infrastructure;
 
 public static class Extensions
 {
-    public static IServiceCollection AddDataAccess(this IServiceCollection serviceCollection)
+    public static IServiceCollection AddDataAccess(this IServiceCollection serviceCollection, IConfigurationManager configuration)
     {
         serviceCollection.AddDbContext<ProductContext>(options =>
         {
-            options.UseNpgsql("Host=localhost;Port=5432;Database=catalogservice;Username=postgres;");
+            options.UseNpgsql(configuration.GetConnectionString("CatalogService"));
         });
         serviceCollection.AddScoped<IProductRepository, ProductRepository>();
 

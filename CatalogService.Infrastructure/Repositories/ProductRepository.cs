@@ -9,7 +9,15 @@ internal class ProductRepository(ProductContext productContext) : IProductReposi
 {
     public async Task CreateAsync(Product product)
     {
+        product.CreatedDateUtc = DateTime.UtcNow;
         await productContext.Products.AddAsync(product);
+        await productContext.SaveChangesAsync();
+    }
+
+    public async Task UpdateAsync(Product product)
+    {
+        product.UpdatedDateUtc = DateTime.UtcNow;
+        productContext.Update(product);
         await productContext.SaveChangesAsync();
     }
 
