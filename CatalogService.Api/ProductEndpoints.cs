@@ -1,4 +1,5 @@
 using CatalogService.Api.Dtos;
+using CatalogService.Api.Dtos.Validators;
 using CatalogService.Application.Dtos;
 using CatalogService.Application.Services.Interfaces;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
@@ -15,6 +16,7 @@ public static class ProductEndpoints
 
         group.MapPost("", CreateAsync);
         group.MapPut("/{id:Guid}", UpdateAsync);
+        group.MapPatch("/{id:Guid}/quantity", UpdateQuantityAsync);
     }
 
     private static async Task<IResult> CreateAsync(CreateProductRequest product, IProductService productService)
@@ -46,6 +48,13 @@ public static class ProductEndpoints
         };
 
         await productService.UpdateAsync(id, updatedProduct);
+
+        return Results.NoContent();
+    }
+    
+    private static async Task<IResult> UpdateQuantityAsync(Guid id, UpdateProductQuantityRequest newQuantity, IProductService productService)
+    {
+        await productService.UpdateQuantityAsync(id, newQuantity.Quantity);
 
         return Results.NoContent();
     }

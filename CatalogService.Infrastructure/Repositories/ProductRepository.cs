@@ -17,7 +17,7 @@ internal class ProductRepository(ProductContext productContext) : IProductReposi
     public async Task UpdateAsync(Product product)
     {
         product.UpdatedDateUtc = DateTime.UtcNow;
-        productContext.Update(product);
+        productContext.Products.Update(product);
         await productContext.SaveChangesAsync();
     }
 

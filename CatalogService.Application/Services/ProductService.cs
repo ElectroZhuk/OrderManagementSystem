@@ -54,6 +54,22 @@ internal class ProductService(IProductRepository productRepository, IAppLogger l
         logger.Information("Обновлен продукт {@Product}.", foundProduct);
     }
 
+    public async Task UpdateQuantityAsync(Guid productId, int newQuantity)
+    {
+        if (newQuantity < 0)
+            throw new IncorrectNewProductQuantityException(newQuantity);
+        
+        var foundProduct = await GetByIdAsync(productId);
+        
+        if (foundProduct is null)
+            throw new ProductNotFoundByIdException(productId);
+
+        foundProduct.Quantity = newQuantity;
+        await productRepository.UpdateAsync(foundProduct);
+        
+        logger.Information("Для продукта с Id='{Id}' обновлено количество в наличии.", foundProduct.Id);
+    }
+
     public async Task<Product?> GetByIdAsync(Guid id)
     {
         return await productRepository.GetByIdAsync(id);
