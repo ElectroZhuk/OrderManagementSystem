@@ -17,6 +17,7 @@ public static class ProductEndpoints
         group.MapPost("", CreateAsync);
         group.MapPut("/{id:Guid}", UpdateAsync);
         group.MapPatch("/{id:Guid}/quantity", UpdateQuantityAsync);
+        group.MapDelete("/{id:Guid}", DeleteAsync);
     }
 
     private static async Task<IResult> CreateAsync(CreateProductRequest product, IProductService productService)
@@ -55,6 +56,13 @@ public static class ProductEndpoints
     private static async Task<IResult> UpdateQuantityAsync(Guid id, UpdateProductQuantityRequest newQuantity, IProductService productService)
     {
         await productService.UpdateQuantityAsync(id, newQuantity.Quantity);
+
+        return Results.NoContent();
+    }
+
+    private static async Task<IResult> DeleteAsync(Guid id, IProductService productService)
+    {
+        await productService.DeleteAsync(id);
 
         return Results.NoContent();
     }

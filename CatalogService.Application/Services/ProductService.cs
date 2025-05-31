@@ -70,6 +70,18 @@ internal class ProductService(IProductRepository productRepository, IAppLogger l
         logger.Information("Для продукта с Id='{Id}' обновлено количество в наличии.", foundProduct.Id);
     }
 
+    public async Task DeleteAsync(Guid id)
+    {
+        var foundProduct = await GetByIdAsync(id);
+        
+        if (foundProduct is null)
+            throw new ProductNotFoundByIdException(id);
+
+        await productRepository.DeleteAsync(foundProduct);
+        
+        logger.Information("Удален продукт {@Product}.", foundProduct);
+    }
+
     public async Task<Product?> GetByIdAsync(Guid id)
     {
         return await productRepository.GetByIdAsync(id);

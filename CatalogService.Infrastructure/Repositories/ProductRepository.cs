@@ -21,6 +21,12 @@ internal class ProductRepository(ProductContext productContext) : IProductReposi
         await productContext.SaveChangesAsync();
     }
 
+    public async Task DeleteAsync(Product product)
+    {
+        productContext.Products.Remove(product);
+        await productContext.SaveChangesAsync();
+    }
+
     public async Task<Product?> GetByIdAsync(Guid id)
     {
         return await productContext.Products.FirstOrDefaultAsync(p => p.Id == id);
