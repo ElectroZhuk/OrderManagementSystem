@@ -14,10 +14,16 @@ public static class ProductEndpoints
             .WithOpenApi()
             .AddFluentValidationAutoValidation();
 
+        group.MapGet("/{id:Guid}", GetAsync);
         group.MapPost("", CreateAsync);
         group.MapPut("/{id:Guid}", UpdateAsync);
         group.MapPatch("/{id:Guid}/quantity", UpdateQuantityAsync);
         group.MapDelete("/{id:Guid}", DeleteAsync);
+    }
+
+    private static async Task<IResult> GetAsync(Guid id, IProductService productService)
+    {
+        return Results.Ok(await productService.GetAsync(id));
     }
 
     private static async Task<IResult> CreateAsync(CreateProductRequest product, IProductService productService)

@@ -9,6 +9,18 @@ namespace CatalogService.Application.Services;
 
 internal class ProductService(IProductRepository productRepository, IAppLogger logger) : IProductService
 {
+    public async Task<Product> GetAsync(Guid id)
+    {
+        var foundProduct = await GetByIdAsync(id);
+        
+        if (foundProduct is null)
+            throw new ProductNotFoundByIdException(id);
+        
+        logger.Information("Передана информация по продукту {@Product}.", foundProduct);
+
+        return foundProduct;
+    }
+
     public async Task CreateAsync(CreateProductDto product)
     {
         var newProduct = new Product()
@@ -35,10 +47,7 @@ internal class ProductService(IProductRepository productRepository, IAppLogger l
         if (id != product.Id)
             throw new UpdatedProductIdDoesNotMatchException(id, product.Id);
         
-        var foundProduct = await GetByIdAsync(id);
-        
-        if (foundProduct is null)
-            throw new ProductNotFoundByIdException(id);
+        var foundProduct = await GetAsync(id);
         
         if (product.Name != foundProduct.Name && await productRepository.HasItemWithName(product.Name))
             throw new ProductWithNameAlreadyExistException(product.Name);
@@ -59,10 +68,7 @@ internal class ProductService(IProductRepository productRepository, IAppLogger l
         if (newQuantity < 0)
             throw new IncorrectNewProductQuantityException(newQuantity);
         
-        var foundProduct = await GetByIdAsync(productId);
-        
-        if (foundProduct is null)
-            throw new ProductNotFoundByIdException(productId);
+        var foundProduct = await GetAsync(productId);
 
         foundProduct.Quantity = newQuantity;
         await productRepository.UpdateAsync(foundProduct);
@@ -72,10 +78,7 @@ internal class ProductService(IProductRepository productRepository, IAppLogger l
 
     public async Task DeleteAsync(Guid id)
     {
-        var foundProduct = await GetByIdAsync(id);
-        
-        if (foundProduct is null)
-            throw new ProductNotFoundByIdException(id);
+        var foundProduct = await GetAsync(id);
 
         await productRepository.DeleteAsync(foundProduct);
         
