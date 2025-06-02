@@ -14,6 +14,7 @@ public static class ProductEndpoints
             .AddFluentValidationAutoValidation();
 
         group.MapPost("", CreateAsync);
+        group.MapPut("/{id:Guid}", UpdateAsync);
     }
 
     private static async Task<IResult> CreateAsync(CreateProductRequest product, IProductService productService)
@@ -28,6 +29,23 @@ public static class ProductEndpoints
         };
         
         await productService.CreateAsync(newProduct);
+
+        return Results.NoContent();
+    }
+
+    private static async Task<IResult> UpdateAsync(Guid id, UpdateProductRequest product, IProductService productService)
+    {
+        var updatedProduct = new UpdateProductDto()
+        {
+            Id = product.Id,
+            Name = product.Name,
+            Description = product.Description,
+            Category = product.Category,
+            Price = product.Price,
+            Quantity = product.Quantity
+        };
+
+        await productService.UpdateAsync(id, updatedProduct);
 
         return Results.NoContent();
     }

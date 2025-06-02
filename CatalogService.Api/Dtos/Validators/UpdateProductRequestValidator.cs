@@ -1,12 +1,14 @@
 using CatalogService.Domain.Repositories;
 using FluentValidation;
+using FluentValidation.Results;
 
 namespace CatalogService.Api.Dtos.Validators;
 
-public class CreateProductRequestValidator : AbstractValidator<CreateProductRequest>
+public class UpdateProductRequestValidator : AbstractValidator<UpdateProductRequest>
 {
-    public CreateProductRequestValidator(IProductRepository productRepository)
+    public UpdateProductRequestValidator(IProductRepository productRepository)
     {
+        RuleFor(p => p.Id).NotEmpty();
         RuleFor(p => p.Name).NotEmpty();
         RuleFor(p => p.Description).NotEmpty();
         RuleFor(p => p.Category).NotEmpty();
