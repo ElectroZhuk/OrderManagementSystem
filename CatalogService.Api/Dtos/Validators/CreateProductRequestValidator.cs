@@ -5,7 +5,7 @@ namespace CatalogService.Api.Dtos.Validators;
 
 public class CreateProductRequestValidator : AbstractValidator<CreateProductRequest>
 {
-    public CreateProductRequestValidator(IProductRepository productRepository)
+    public CreateProductRequestValidator()
     {
         RuleFor(p => p.Name).NotEmpty();
         RuleFor(p => p.Description).NotEmpty();
