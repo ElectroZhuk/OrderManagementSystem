@@ -8,6 +8,7 @@ public static class ApiValidators
     {
         serviceCollection.AddScoped<IValidator<CreateProductRequest>, CreateProductRequestValidator>();
         serviceCollection.AddScoped<IValidator<UpdateProductRequest>, UpdateProductRequestValidator>();
+        serviceCollection.AddScoped<IValidator<UpdateProductQuantityRequest>, UpdateProductQuantityRequestValidator>();
 
         return serviceCollection;
     }
