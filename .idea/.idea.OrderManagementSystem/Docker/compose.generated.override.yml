@@ -1,0 +1,21 @@
+# This is a generated file. Not intended for manual editing.
+services:
+  catalogservice.api:
+    build:
+      context: "/home/electrozhuk/RiderProjects/OrderManagementSystem"
+      dockerfile: "CatalogService.Api/Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net8.0/CatalogService.Api.dll"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "catalogservice.api:dev"
+    ports: []
+    volumes:
+    - "/home/electrozhuk/RiderProjects/OrderManagementSystem/CatalogService.Api:/app:rw"
+    - "/home/electrozhuk/RiderProjects/OrderManagementSystem:/src:rw"
+    - "/home/electrozhuk/.nuget/packages:/home/app/.nuget/packages"
+    working_dir: "/app"

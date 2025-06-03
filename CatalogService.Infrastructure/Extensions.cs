@@ -16,7 +16,7 @@ public static class Extensions
     {
         serviceCollection.AddDbContext<ProductContext>(options =>
         {
-            options.UseNpgsql(configuration.GetConnectionString("CatalogService"));
+            options.UseNpgsql(configuration.GetConnectionString("CatalogServiceDocker"));
         });
         serviceCollection.AddScoped<IProductRepository, ProductRepository>();
 
