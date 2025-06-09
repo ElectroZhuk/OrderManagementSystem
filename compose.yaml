@@ -10,6 +10,8 @@
       - "8081:8081"
     depends_on:
       - catalogservice.database
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
         
   catalogservice.database:
     image: postgres:latest

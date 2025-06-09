@@ -2,7 +2,7 @@
 services:
   catalogservice.api:
     build:
-      context: "/home/electrozhuk/RiderProjects/OrderManagementSystem"
+      context: "/home/e.bocharnikov/RiderProjects/OrderManagementSystem"
       dockerfile: "CatalogService.Api/Dockerfile"
       target: "base"
     command: []
@@ -15,7 +15,7 @@ services:
     image: "catalogservice.api:dev"
     ports: []
     volumes:
-    - "/home/electrozhuk/RiderProjects/OrderManagementSystem/CatalogService.Api:/app:rw"
-    - "/home/electrozhuk/RiderProjects/OrderManagementSystem:/src:rw"
-    - "/home/electrozhuk/.nuget/packages:/home/app/.nuget/packages"
+    - "/home/e.bocharnikov/RiderProjects/OrderManagementSystem/CatalogService.Api:/app:rw"
+    - "/home/e.bocharnikov/RiderProjects/OrderManagementSystem:/src:rw"
+    - "/home/e.bocharnikov/.nuget/packages:/home/app/.nuget/packages"
     working_dir: "/app"
