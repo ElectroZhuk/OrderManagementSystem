@@ -7,7 +7,7 @@ using CatalogService.Domain.Repositories;
 
 namespace CatalogService.Application.Services;
 
-internal class ProductService(IProductRepository productRepository, IAppLogger logger) : IProductService
+public class ProductService(IProductRepository productRepository, IAppLogger logger) : IProductService
 {
     public async Task<Product> GetAsync(Guid id)
     {
