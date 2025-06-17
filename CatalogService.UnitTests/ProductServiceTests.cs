@@ -6,7 +6,7 @@ using CatalogService.Domain.Entities;
 using CatalogService.Domain.Repositories;
 using Moq;
 
-namespace CatalogService.Tests;
+namespace CatalogService.UnitTests;
 
 public class ProductServiceTests
 {

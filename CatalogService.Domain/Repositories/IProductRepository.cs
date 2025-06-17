@@ -4,7 +4,7 @@ namespace CatalogService.Domain.Repositories;
 
 public interface IProductRepository
 { 
-    Task CreateAsync(Product product);
+    Task<Guid> CreateAsync(Product product);
 
     Task UpdateAsync(Product product);
 

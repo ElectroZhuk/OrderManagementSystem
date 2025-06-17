@@ -35,3 +35,5 @@ app.UseExceptionHandler();
 app.MapProductEndpoints();
 
 app.Run();
+
+public partial class Program { }
