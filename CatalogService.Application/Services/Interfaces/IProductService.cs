@@ -11,7 +11,7 @@ public interface IProductService
 
     Task UpdateAsync(Guid id, UpdateProductDto product);
 
-    Task UpdateQuantityAsync(Guid productId, int newQuantity);
+    Task UpdateQuantityAsync(Guid productId, int decreaseAmount);
 
     Task DeleteAsync(Guid id);
 

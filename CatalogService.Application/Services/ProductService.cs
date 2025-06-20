@@ -66,14 +66,17 @@ public class ProductService(IProductRepository productRepository, IAppLogger log
         logger.Information("Обновлен продукт {@Product}.", foundProduct);
     }
 
-    public async Task UpdateQuantityAsync(Guid productId, int newQuantity)
+    public async Task UpdateQuantityAsync(Guid productId, int decreaseAmount)
     {
-        if (newQuantity < 0)
-            throw new IncorrectNewProductQuantityException(newQuantity);
+        if (decreaseAmount <= 0)
+            throw new IncorrectDecreaseProductQuantityException(decreaseAmount);
         
         var foundProduct = await GetAsync(productId);
 
-        foundProduct.Quantity = newQuantity;
+        if (foundProduct.Quantity - decreaseAmount < 0)
+            throw new NewProductQuantityLessThenZeroException(foundProduct.Quantity - decreaseAmount);
+
+        foundProduct.Quantity -= decreaseAmount;
         await productRepository.UpdateAsync(foundProduct);
         
         logger.Information("Для продукта с Id='{Id}' обновлено количество в наличии.", foundProduct.Id);
