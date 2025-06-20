@@ -42,6 +42,13 @@ public class ProductServiceTests(IntegrationTestWebAppFactory factory) : BaseInt
         // Assert
         var createdProduct = await DbContext.Products.FirstOrDefaultAsync(p => p.Id == createdProductId);
         Assert.NotNull(createdProduct);
+        Assert.Multiple(
+            () => Assert.Equal(product.Name, createdProduct.Name),
+            () => Assert.Equal(product.Category, createdProduct.Category),
+            () => Assert.Equal(product.Description, createdProduct.Description),
+            () => Assert.Equal(product.Price, createdProduct.Price),
+            () => Assert.Equal(product.Quantity, createdProduct.Quantity)
+        );
     }
 
     [Fact]
@@ -67,20 +74,21 @@ public class ProductServiceTests(IntegrationTestWebAppFactory factory) : BaseInt
     }
 
     [Fact]
-    public async Task UpdateQuantityAsync_ShouldUpdateProductQuantityInDatabase_WhenQuantityIsValid()
+    public async Task UpdateQuantityAsync_ShouldDecreaseProductQuantityInDatabase_WhenDecreaseAmountIsValid()
     {
         // Arrange
         var existProduct = InitCreateProductDto();
+        existProduct.Quantity = Random.Shared.Next(1, int.MaxValue);
         var existsProductId = await ProductService.CreateAsync(existProduct);
-        var newQuantity = Random.Shared.Next();
+        var decreaseAmount = Random.Shared.Next(existProduct.Quantity);
 
         // Act
-        await ProductService.UpdateQuantityAsync(existsProductId, newQuantity);
+        await ProductService.UpdateQuantityAsync(existsProductId, decreaseAmount);
 
         // Assert
         var updatedProduct = await DbContext.Products.FirstOrDefaultAsync(p => p.Id == existsProductId);
         Assert.NotNull(updatedProduct);
-        Assert.Equal(newQuantity, updatedProduct.Quantity);
+        Assert.Equal(existProduct.Quantity - decreaseAmount, updatedProduct.Quantity);
     }
 
     [Fact]

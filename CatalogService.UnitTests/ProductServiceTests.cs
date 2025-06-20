@@ -194,30 +194,54 @@ public class ProductServiceTests
     [InlineData(-5)]
     [InlineData(-100)]
     [InlineData(int.MinValue)]
-    public async Task UpdateQuantityAsync_Should_ThrowIncorrectNewProductQuantity_WhenNewQuantityLessThenZero(
-        int negativeQuantity)
+    public async Task UpdateQuantityAsync_Should_ThrowIncorrectDecreaseProductQuantityException_WhenDecreaseAmountLessThenOrEqualToZero(
+        int negativeDecreaseAmount)
     {
         // Act
-        var exception = await Assert.ThrowsAsync<IncorrectNewProductQuantityException>(() =>
-            _productService.UpdateQuantityAsync(Guid.NewGuid(), negativeQuantity));
+        var exception = await Assert.ThrowsAsync<IncorrectDecreaseProductQuantityException>(() =>
+            _productService.UpdateQuantityAsync(Guid.NewGuid(), negativeDecreaseAmount));
         
         // Assert
-        Assert.Contains(negativeQuantity.ToString(), exception.Message);
+        Assert.Contains(negativeDecreaseAmount.ToString(), exception.Message);
     }
     
     [Theory]
     [InlineData(1)]
     [InlineData(5)]
     [InlineData(100)]
-    [InlineData(int.MaxValue)]
-    public async Task UpdateQuantityAsync_Should_CallUpdateAsyncOnRepository_WhenQuantityUpdated(int newQuantity)
+    [InlineData(int.MaxValue - 1)]
+    public async Task UpdateQuantityAsync_Should_ThrowNewProductQuantityLessThenZeroException_WhenNewProductQuantityLessThenZero(
+        int currentProductQuantity)
     {
         // Arrange
         var product = CreateTestProduct();
+        product.Quantity = currentProductQuantity;
+        SetupRepositoryGetById(product.Id, product);
+        var decreaseAmount = product.Quantity + 1;
+        
+        // Act
+        var exception = await Assert.ThrowsAsync<NewProductQuantityLessThenZeroException>(() =>
+            _productService.UpdateQuantityAsync(product.Id, decreaseAmount));
+        
+        // Assert
+        Assert.Contains((product.Quantity - decreaseAmount).ToString(), exception.Message);
+    }
+    
+    [Theory]
+    [InlineData(1)]
+    [InlineData(5)]
+    [InlineData(100)]
+    [InlineData(int.MaxValue - 1)]
+    public async Task UpdateQuantityAsync_Should_CallUpdateAsyncOnRepository_WhenQuantityUpdated(int decreaseAmount)
+    {
+        // Arrange
+        var product = CreateTestProduct();
+        var desiredQuantity = Random.Shared.Next(decreaseAmount, int.MaxValue);
+        product.Quantity = desiredQuantity;
         SetupRepositoryGetById(product.Id, product);
         
         // Act
-        await _productService.UpdateQuantityAsync(product.Id, newQuantity);
+        await _productService.UpdateQuantityAsync(product.Id, decreaseAmount);
         
         // Assert
         _productRepositoryMock.Verify(repo => repo.UpdateAsync(It.Is<Product>(p =>
@@ -226,7 +250,7 @@ public class ProductServiceTests
                 p.Description == product.Description &&
                 p.Category == product.Category &&
                 p.Price == product.Price &&
-                p.Quantity == newQuantity &&
+                p.Quantity == desiredQuantity - decreaseAmount &&
                 p.CreatedDateUtc == product.CreatedDateUtc)),
             Times.Once);
     }
