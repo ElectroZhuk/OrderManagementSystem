@@ -6,6 +6,6 @@ public class UpdateProductQuantityRequestValidator : AbstractValidator<UpdatePro
 {
     public UpdateProductQuantityRequestValidator()
     {
-        RuleFor(r => r.Quantity).GreaterThanOrEqualTo(0);
+        RuleFor(r => r.DecreaseAmount).GreaterThan(0);
     }
 }

@@ -61,7 +61,7 @@ public static class ProductEndpoints
     
     private static async Task<IResult> UpdateQuantityAsync(Guid id, UpdateProductQuantityRequest newQuantity, IProductService productService)
     {
-        await productService.UpdateQuantityAsync(id, newQuantity.Quantity);
+        await productService.UpdateQuantityAsync(id, newQuantity.DecreaseAmount);
 
         return Results.NoContent();
     }
