@@ -1,0 +1,24 @@
+﻿services:
+  catalogservice.api:
+    image: catalogservice.api
+    container_name: catalogservice.api
+    build:
+      context: .
+      dockerfile: CatalogService.Api/Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    depends_on:
+      - catalogservice.database
+        
+  catalogservice.database:
+    image: postgres:latest
+    container_name: catalogservice.database
+    environment:
+      - POSTGRES_DB=catalogservice
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./.containters/catalogservice-db:/var/lig/postgres/data
+    ports:
+      - 5432:5432

@@ -7,7 +7,7 @@ using CatalogService.Domain.Repositories;
 
 namespace CatalogService.Application.Services;
 
-internal class ProductService(IProductRepository productRepository, IAppLogger logger) : IProductService
+public class ProductService(IProductRepository productRepository, IAppLogger logger) : IProductService
 {
     public async Task<Product> GetAsync(Guid id)
     {
@@ -21,7 +21,7 @@ internal class ProductService(IProductRepository productRepository, IAppLogger l
         return foundProduct;
     }
 
-    public async Task CreateAsync(CreateProductDto product)
+    public async Task<Guid> CreateAsync(CreateProductDto product)
     {
         var newProduct = new Product()
         {
@@ -37,9 +37,12 @@ internal class ProductService(IProductRepository productRepository, IAppLogger l
             throw new ProductWithNameAlreadyExistException(newProduct.Name);
         }
 
-        await productRepository.CreateAsync(newProduct);
-        
+        var createdProductId = await productRepository.CreateAsync(newProduct);
+
+        newProduct.Id = createdProductId;
         logger.Information("Создан продукт {@Product}.", newProduct);
+
+        return createdProductId;
     }
 
     public async Task UpdateAsync(Guid id, UpdateProductDto product)

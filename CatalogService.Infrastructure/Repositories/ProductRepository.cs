@@ -7,11 +7,13 @@ namespace CatalogService.Infrastructure.Repositories;
 
 internal class ProductRepository(ProductContext productContext) : IProductRepository
 {
-    public async Task CreateAsync(Product product)
+    public async Task<Guid> CreateAsync(Product product)
     {
         product.CreatedDateUtc = DateTime.UtcNow;
-        await productContext.Products.AddAsync(product);
+        var createdProduct = await productContext.Products.AddAsync(product);
         await productContext.SaveChangesAsync();
+
+        return createdProduct.Entity.Id;
     }
 
     public async Task UpdateAsync(Product product)

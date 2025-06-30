@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDataAccess(builder.Configuration);
+builder.Services.AddDockerDataAccess(builder.Configuration);
 
 builder.Services.AddApplicationLogic();
 
@@ -27,8 +27,13 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+if (app.Environment.IsDevelopment())
+    app.Services.CreateScope().ApplyMigrations();
+
 app.UseExceptionHandler();
 
 app.MapProductEndpoints();
 
 app.Run();
+
+public partial class Program { }
